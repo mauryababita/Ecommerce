@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>React Combined Project</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/supersimpledev/dayjs.js"></script>
+
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+</head>
+
+<body class="bg-gray-100 flex flex-col items-center gap-10 p-10">
+
+<div id="root"></div>
+
+<script type="text/babel">
+
+const {useState,useRef,useEffect} = React;
+
+function ToggleButton(){
+
+  const [isOn,setIsOn] = useState(true);
+
+  return(
+    <button
+      className={`px-5 py-2 text-white rounded ${
+        isOn ? "bg-green-600" : "bg-red-600"
+      }`}
+      onClick={()=>setIsOn(!isOn)}
+    >
+      {isOn ? "ON":"OFF"}
+    </button>
+  );
+}
+
+function Clock(){
+
+  const [time,setTime] = useState(
+    dayjs().format("HH:mm:ss")
+  );
+
+  useEffect(()=>{
+    setInterval(()=>{
+      setTime(dayjs().format("HH:mm:ss"))
+    },1000)
+  },[])
+
+  return(
+    <h2 class="text-xl font-bold">
+      Time : {time}
+    </h2>
+  );
+}
+
+function Counter(){
+
+  const [count,setCount] = useState(0);
+  const buttonRef = useRef(null);
+
+  function autoClick(){
+
+    setInterval(()=>{
+      if(buttonRef.current){
+        buttonRef.current.click();
+      }
+    },1000)
+
+  }
+
+  return(
+    <div class="flex gap-2">
+
+      <button
+        ref={buttonRef}
+        class="bg-white border px-4 py-2"
+        onClick={()=>setCount(count+1)}
+      >
+        Clicked {count} times
+      </button>
+
+      <button
+        class="bg-white border px-4 py-2"
+        onClick={()=>setCount(0)}
+      >
+        Reset
+      </button>
+
+      <button
+        class="bg-white border px-4 py-2"
+        onClick={autoClick}
+      >
+        Auto Click
+      </button>
+
+    </div>
+  )
+}
+
+function LoginForm(){
+
+  return(
+
+    <div class="flex flex-col gap-2">
+
+      <input
+        placeholder="Email"
+        class="border p-2 rounded"
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        class="border p-2 rounded"
+      />
+
+      <button class="bg-blue-500 text-white p-2 rounded">
+        Login
+      </button>
+
+    </div>
+
+  )
+
+}
+
+function App(){
+
+  return(
+
+    <div class="space-y-10 text-center">
+
+      <h1 class="text-3xl font-bold">
+        React Practice Project
+      </h1>
+
+      <ToggleButton/>
+
+      <Clock/>
+
+      <LoginForm/>
+
+      <Counter/>
+
+    </div>
+
+  )
+
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(<App/>)
+
+</script>
+
+</body>
+</html>

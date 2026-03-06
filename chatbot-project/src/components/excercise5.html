@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>React Mini Projects</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f0f4ff;
+      --surface: rgba(255,255,255,0.75);
+      --surface-hover: rgba(255,255,255,0.95);
+      --border: rgba(100,110,180,0.15);
+      --accent: #00b894;
+      --accent2: #6c63ff;
+      --accent3: #ff6b6b;
+      --text: #1e1e2e;
+      --muted: #8892b0;
+      --radius: 16px;
+    }
+
+    body {
+      font-family: 'DM Mono', monospace;
+      background: linear-gradient(135deg, #e8eeff 0%, #f5f0ff 50%, #e8f8f5 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 48px 20px;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background glow */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; left: -200px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(108,99,255,0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,184,148,0.09) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app {
+      width: 680px;
+      max-width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .app-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .app-heading {
+      font-family: 'Syne', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      color: #1e1e2e;
+      line-height: 1.1;
+      margin-bottom: 40px;
+      letter-spacing: -0.02em;
+    }
+
+    .app-heading span {
+      color: var(--accent);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 30px;
+      margin-bottom: 20px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 24px rgba(100,110,200,0.08);
+      transition: border-color 0.3s, background 0.3s, transform 0.2s, box-shadow 0.3s;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .card:hover {
+      border-color: rgba(108,99,255,0.22);
+      background: var(--surface-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(108,99,255,0.12);
+    }
+
+    .card:nth-child(1) { animation-delay: 0.05s; }
+    .card:nth-child(2) { animation-delay: 0.1s; }
+    .card:nth-child(3) { animation-delay: 0.15s; }
+    .card:nth-child(4) { animation-delay: 0.2s; }
+    .card:nth-child(5) { animation-delay: 0.25s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    /* ─── Toggle ─── */
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .toggle-track {
+      width: 60px; height: 32px;
+      border-radius: 100px;
+      background: rgba(0,0,0,0.08);
+      border: 1px solid rgba(0,0,0,0.1);
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    .toggle-track.on {
+      background: rgba(0,245,200,0.18);
+      border-color: var(--accent);
+    }
+
+    .toggle-thumb {
+      position: absolute;
+      top: 4px; left: 4px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s;
+    }
+
+    .toggle-track.on .toggle-thumb {
+      transform: translateX(28px);
+      background: var(--accent);
+      box-shadow: 0 0 12px rgba(0,245,200,0.6);
+    }
+
+    .toggle-status {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .toggle-status.on  { color: var(--accent); }
+    .toggle-status.off { color: var(--muted); }
+
+    .toggle-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    .toggle-dot.on {
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 6px var(--accent); }
+      50%       { box-shadow: 0 0 14px var(--accent); }
+    }
+
+    /* ─── Login Form ─── */
+    .form-row { display: flex; flex-direction: column; gap: 12px; }
+
+    .input-field {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(108,99,255,0.2);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .input-field::placeholder { color: var(--muted); }
+
+    .input-field:focus {
+      border-color: var(--accent2);
+      box-shadow: 0 0 0 3px rgba(124,106,255,0.15);
+    }
+
+    .btn-row { display: flex; gap: 10px; margin-top: 4px; }
+
+    .btn {
+      border: none;
+      padding: 11px 24px;
+      border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+    .btn:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: var(--accent2);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(124,106,255,0.35);
+    }
+    .btn-primary:hover { box-shadow: 0 6px 22px rgba(124,106,255,0.5); }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+
+    /* ─── Clock ─── */
+    .clock-display {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .clock-time {
+      font-family: 'Syne', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .clock-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: 6px;
+    }
+
+    .clock-accent {
+      display: inline-block;
+      color: var(--accent);
+    }
+
+    /* ─── Counter ─── */
+    .counter-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 54px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 16px;
+      transition: transform 0.1s;
+    }
+
+    .counter-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+
+    .counter-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    .btn-count {
+      border: none;
+      padding: 11px 22px;
+      border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+    .btn-count:hover { transform: translateY(-2px); }
+
+    .btn-inc {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 4px 14px rgba(0,245,200,0.3);
+    }
+    .btn-inc:hover { box-shadow: 0 6px 20px rgba(0,245,200,0.5); }
+
+    .btn-reset {
+      background: rgba(255,107,107,0.15);
+      color: var(--accent3);
+      border: 1px solid rgba(255,107,107,0.2);
+    }
+    .btn-auto {
+      background: rgba(124,106,255,0.15);
+      color: var(--accent2);
+      border: 1px solid rgba(124,106,255,0.2);
+    }
+
+    /* ─── Chatbot ─── */
+    .chatbox {
+      height: 240px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 4px 2px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.1) transparent;
+    }
+
+    .chatbox::-webkit-scrollbar { width: 4px; }
+    .chatbox::-webkit-scrollbar-track { background: transparent; }
+    .chatbox::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+    .message {
+      padding: 10px 14px;
+      border-radius: 12px;
+      max-width: 75%;
+      font-size: 13px;
+      line-height: 1.5;
+      animation: msgIn 0.2s ease;
+    }
+
+    @keyframes msgIn {
+      from { opacity: 0; transform: scale(0.95) translateY(4px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .message.user {
+      background: var(--accent2);
+      color: #fff;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.bot {
+      background: rgba(108,99,255,0.07);
+      color: var(--text);
+      border: 1px solid rgba(108,99,255,0.12);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-input-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 11px 16px;
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(108,99,255,0.2);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.25s;
+    }
+    .chat-input::placeholder { color: var(--muted); }
+    .chat-input:focus { border-color: var(--accent2); }
+
+    .btn-send {
+      padding: 11px 20px;
+      background: var(--accent2);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 14px rgba(124,106,255,0.3);
+    }
+    .btn-send:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124,106,255,0.5); }
+
+    /* Login feedback */
+    .login-msg {
+      font-size: 12px;
+      margin-top: 8px;
+      min-height: 18px;
+      transition: opacity 0.3s;
+    }
+    .login-msg.success { color: var(--accent); }
+    .login-msg.error   { color: var(--accent3); }
+  </style>
+</head>
+
+<body>
+<div class="js-container"></div>
+
+<script src="https://unpkg.com/supersimpledev/dayjs.js"></script>
+<script src="https://unpkg.com/supersimpledev/react.js"></script>
+<script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+<script src="https://unpkg.com/supersimpledev/babel.js"></script>
+
+<script type="text/babel">
+
+/* ── Toggle ── */
+function ToggleButton() {
+  const [isOn, setIsOn] = React.useState(false);
+  return (
+    <div>
+      <div className="card-label">Toggle Switch</div>
+      <div className="toggle-wrap">
+        <div className={`toggle-track ${isOn ? "on" : ""}`} onClick={() => setIsOn(!isOn)}>
+          <div className="toggle-thumb" />
+        </div>
+        <span className={`toggle-status ${isOn ? "on" : "off"}`}>
+          {isOn ? "ON" : "OFF"}
+        </span>
+        <div className={`toggle-dot ${isOn ? "on" : ""}`} />
+      </div>
+    </div>
+  );
+}
+
+
+/* ── Login Form ── */
+function LoginForm() {
+  const [email, setEmail]       = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [msg, setMsg]           = React.useState({ text: "", type: "" });
+
+  function handleLogin() {
+    if (!email || !password) {
+      setMsg({ text: "Please fill in all fields.", type: "error" });
+      return;
+    }
+    setMsg({ text: `Welcome back, ${email} ✓`, type: "success" });
+  }
+
+  function handleSignup() {
+    if (!email || !password) {
+      setMsg({ text: "Please fill in all fields.", type: "error" });
+      return;
+    }
+    if (password.length < 6) {
+      setMsg({ text: "Password must be at least 6 characters.", type: "error" });
+      return;
+    }
+    setMsg({ text: `Account created for ${email} ✓`, type: "success" });
+  }
+
+  return (
+    <div>
+      <div className="card-label">Login Form</div>
+      <div className="form-row">
+        <input
+          className="input-field"
+          placeholder="Email address"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          className="input-field"
+          placeholder="Password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
+        <div className="btn-row">
+          <button className="btn btn-primary" onClick={handleLogin}>Login</button>
+          <button className="btn btn-ghost"   onClick={handleSignup}>Sign Up</button>
+        </div>
+        {msg.text && <div className={`login-msg ${msg.type}`}>{msg.text}</div>}
+      </div>
+    </div>
+  );
+}
+
+
+/* ── Clock ── */
+function Clock() {
+  const [time, setTime] = React.useState(dayjs().format("HH:mm:ss"));
+  const [date, setDate] = React.useState(dayjs().format("ddd, MMM D"));
+
+  React.useEffect(() => {
+    const id = setInterval(() => {
+      setTime(dayjs().format("HH:mm:ss"));
+      setDate(dayjs().format("ddd, MMM D"));
+    }, 1000);
+    return () => clearInterval(id);   // cleanup on unmount
+  }, []);
+
+  const [hh, mm, ss] = time.split(":");
+
+  return (
+    <div>
+      <div className="card-label">Live Clock</div>
+      <div className="clock-display">
+        <div className="clock-time">
+          <span className="clock-accent">{hh}</span>
+          <span style={{color:"var(--muted)"}}>:</span>
+          {mm}
+          <span style={{color:"var(--muted)"}}>:</span>
+          <span style={{fontSize:"32px", color:"var(--muted)"}}>{ss}</span>
+        </div>
+      </div>
+      <div style={{marginTop:"6px", fontSize:"12px", color:"var(--muted)"}}>{date}</div>
+    </div>
+  );
+}
+
+
+/* ── Counter ── */
+function Counter() {
+  const [count, setCount]     = React.useState(0);
+  const [running, setRunning] = React.useState(false);
+  const intervalRef           = React.useRef(null);
+  const btnRef                = React.useRef(null);
+
+  function increase() { setCount(c => c + 1); }
+  function reset()    { setCount(0); stopAuto(); }
+
+  function toggleAuto() {
+    if (running) {
+      stopAuto();
+    } else {
+      setRunning(true);
+      intervalRef.current = setInterval(() => {
+        setCount(c => c + 1);
+      }, 500);
+    }
+  }
+
+  function stopAuto() {
+    setRunning(false);
+    clearInterval(intervalRef.current);
+  }
+
+  return (
+    <div>
+      <div className="card-label">Click Counter</div>
+      <div className="counter-num" ref={btnRef}>
+        {count}
+        <span className="counter-sub">{count === 1 ? "click" : "clicks"}</span>
+      </div>
+      <div className="counter-btns">
+        <button className="btn-count btn-inc" onClick={increase}>+ Increment</button>
+        <button className="btn-count btn-reset" onClick={reset}>Reset</button>
+        <button className="btn-count btn-auto" onClick={toggleAuto}>
+          {running ? "⏹ Stop" : "▶ Auto"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
+/* ── Chatbot ── */
+function Chatbot() {
+  const [messages, setMessages] = React.useState([
+    { text: "Hello! 👋 I'm your assistant. How can I help?", sender: "bot" }
+  ]);
+  const [input, setInput] = React.useState("");
+  const bottomRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
+
+  function sendMessage() {
+    const trimmed = input.trim();
+    if (!trimmed) return;
+
+    const userMsg = { text: trimmed, sender: "user" };
+
+    // Simple smart replies
+    let reply = "You said: " + trimmed;
+    const lower = trimmed.toLowerCase();
+    if (lower.includes("hello") || lower.includes("hi")) reply = "Hey there! 👋";
+    else if (lower.includes("how are you")) reply = "Running smoothly! ⚡";
+    else if (lower.includes("bye")) reply = "Goodbye! 👋 Take care.";
+    else if (lower.includes("time")) reply = "Check the clock widget above! 🕐";
+
+    const botMsg = { text: reply, sender: "bot" };
+    setMessages(prev => [...prev, userMsg, botMsg]);
+    setInput("");
+  }
+
+  function handleKey(e) {
+    if (e.key === "Enter") sendMessage();
+  }
+
+  return (
+    <div>
+      <div className="card-label">Chatbot</div>
+      <div className="chatbox">
+        {messages.map((msg, i) => (
+          <div key={i} className={`message ${msg.sender}`}>{msg.text}</div>
+        ))}
+        <div ref={bottomRef} />
+      </div>
+      <div className="chat-input-row">
+        <input
+          className="chat-input"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={handleKey}
+          placeholder="Type a message…"
+        />
+        <button className="btn-send" onClick={sendMessage}>Send ↑</button>
+      </div>
+    </div>
+  );
+}
+
+
+/* ── App ── */
+function App() {
+  return (
+    <div className="app">
+      <div className="app-title">Interactive Components</div>
+      <div className="app-heading">React Mini<br/><span>Projects</span></div>
+
+      <div className="card"><ToggleButton /></div>
+      <div className="card"><LoginForm /></div>
+      <div className="card"><Clock /></div>
+      <div className="card"><Counter /></div>
+      <div className="card"><Chatbot /></div>
+    </div>
+  );
+}
+
+const container = document.querySelector(".js-container");
+ReactDOM.createRoot(container).render(<App />);
+</script>
+</body>
+</html>

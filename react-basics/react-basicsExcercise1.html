@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Product Cost</title>
+  </head>
+  <style>
+    body{
+      font-family: Arial;
+      background:#f5f5f5;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+    }
+
+    .card{
+      background:white;
+      padding:30px;
+      width:320px;
+      border-radius:10px;
+      box-shadow:0px 0px 10px rgba(0,0,0,0.2);
+      text-align:center;
+    }
+
+    h2{
+      margin-top:0;
+    }
+
+    button{
+      background:green;
+      color:white;
+      border:none;
+      padding:10px 20px;
+      border-radius:5px;
+      cursor:pointer;
+      margin-top:10px;
+    }
+
+    button:hover{
+      background:darkgreen;
+    }
+
+    hr{
+      margin:20px 0;
+    }
+  </style>
+  <body>
+    <div class="js-container"></div>
+
+
+    <script src="https://unpkg.com/supersimpledev@8.6.4/external-library.js"> </script>
+
+    <script src="https://unpkg.com/supersimpledev/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev/react-dom.js"></script>
+    <script src="https://unpkg.com/supersimpledev/dayjs.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev/babel.js"></script>
+    <script type="text/babel">
+
+    
+// Stock Design
+const stockName = "Cotton Stock";
+const stockPrice = 10;
+
+//  Product Cost
+const socks = 10;
+const tshirtPrice = 8;
+const tshirtQuantity = 2;
+
+const productCost = socks + (tshirtPrice * tshirtQuantity);
+console.log("Product Cost:", productCost);
+
+
+
+// Step 3 : Shipping
+const shippingCost = 5;
+const totalCost = productCost + shippingCost;
+
+// React Root
+const container = document.querySelector(".js-container");
+const root = ReactDOM.createRoot(container);
+
+//Live Clock
+setInterval(() => {
+
+const today = dayjs().format("MMMM D");
+const time = dayjs().format("HH:mm:ss");
+
+const design = (
+
+<div className="card">
+
+<h2>{stockName}</h2>
+
+<p>Current Price: <b>${stockPrice}</b></p>
+
+<button>Buy Now</button>
+
+<p>My Name is Maurya Babita</p>
+
+<hr/>
+
+<h3>Order Summary</h3>
+
+<p>Product cost: ${productCost}</p>
+
+<p>Shipping cost: ${shippingCost}</p>
+
+<p><b>Total cost: ${totalCost}</b></p>
+
+<button>Place your order</button>
+
+<hr/>
+
+<p>Today is {today}</p>
+
+<p>Current time: {time}</p>
+
+</div>
+
+);
+
+root.render(design);
+
+},1000);
+
+
+    </script>
+    
+  </body>
+</html>
